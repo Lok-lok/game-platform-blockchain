@@ -21,7 +21,7 @@ contract VotingContract {
     }
 
     struct publisher {
-        mappint (address => Item) relesedItem;
+        mapping (address => Item) relesedItem;
     }
 
     address public administrator;

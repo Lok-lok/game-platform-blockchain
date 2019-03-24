@@ -1,5 +1,5 @@
-var Migrations = artifacts.require("./VotingContract.sol");
+var Migrations = artifacts.require("./PlatformContract.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Migrations, 10);
+  deployer.deploy(Migrations);
 };

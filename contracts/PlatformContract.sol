@@ -1,6 +1,6 @@
 pragma solidity >=0.4.22 <0.6.0;
 
-contract VotingContract {
+contract PlatformContract {
 
     /*  Normal User who can buy or sell items
      *  items: number for each item he owned
@@ -13,7 +13,6 @@ contract VotingContract {
         uint money;
         bool authority;
         bool regeisted;
-        uint ownedCount;
     }
     
 
@@ -36,13 +35,14 @@ contract VotingContract {
         bool tradeable;
     }
 
-    /*  Publisher who can publish game or related Item
-     *  Item: item published by this publisher
-     *  authority: whether this publisher can publish game any more
-     *  regeisted: this user has been regeisted
+    /*  Publisher who can publish game or related Items
+     *  releasedItem: item published by this publisher
+     *  authority: whether this publisher can publish game in the future
+     *  regeisted: this publisher has been regeisted or not
+     *  releasedCount: number of items released by this publisher
      */
     struct Publisher {
-        mapping(uint => Item) relesedItems; 
+        mapping(uint => Item) releasedItems; 
         bool authority;
         bool regeisted;
         uint releasdCount;
@@ -58,7 +58,7 @@ contract VotingContract {
     }
 
     function regeisterPublisher() public {
-        require(msg.sender != administrator && users[msg.sender].regeisted && publishers[msg.sender].regeisted);
+        require(msg.sender != administrator && !users[msg.sender].regeisted && !publishers[msg.sender].regeisted);
 
         Publisher memory p;
         p.authority = true;
@@ -68,7 +68,8 @@ contract VotingContract {
     }
 
     function releaseItem(uint gameId, uint itemId, uint price, bool repeatable) public {
-        require(publishers[msg.sender].regeisted && publishers[msg.sender].authority);
+        require(publishers[msg.sender].regeisted && publishers[msg.sender].authority
+                 && price >= 0 && gameId <= itemId && itemId > 0);
 
         Item memory newItem = Item(gameId, itemId, price, 0, 0, repeatable, true);
 
@@ -76,17 +77,16 @@ contract VotingContract {
 
         Publisher storage p = publishers[msg.sender];
 
-        p.relesedItems[p.releasdCount++] = newItem;
+        p.releasedItems[p.releasdCount++] = newItem;
     }
 
     function deleteItem(uint itemId) public {
-        require(itemId >= 0 && msg.sender == administrator);
+        require(itemId > 0 && msg.sender == administrator);
         items[itemId].tradeable = false;
     }
 
-
     function regeisterUser() public {
-        require(msg.sender != administrator && users[msg.sender].regeisted && publishers[msg.sender].regeisted);
+        require(msg.sender != administrator && !users[msg.sender].regeisted && !publishers[msg.sender].regeisted);
 
         User memory u;
         u.money = 0;
@@ -105,11 +105,11 @@ contract VotingContract {
 
         User storage user = users[msg.sender];
         Item storage item = items[itemId];
-        require(user.regeisted && item.itemId > 0 && item.tradeable
+        require(user.regeisted && itemId > 0 && item.tradeable
                 && user.money >= item.price && user.authority 
-                && (item.repeatable == true || user.items[item.itemId] == 0 ));
+                && (item.repeatable == true || user.items[itemId] == 0 ));
 
-        user.items[item.itemId]++;
+        user.items[itemId]++;
         user.money -= item.price;
         item.selledCount++;
     }
@@ -119,15 +119,15 @@ contract VotingContract {
         User storage seller = users[sellerAddress];
         Item storage item = items[itemId];
 
-        require(buyer.regeisted && item.itemId > 0 && seller.regeisted && item.tradeable && tradePrice >= 0
+        require(buyer.regeisted && itemId > 0 && seller.regeisted && item.tradeable && tradePrice >= 0
                 && buyer.money >= item.price && buyer.authority 
                 && (item.repeatable == true || buyer.items[itemId] == 0)
-                && seller.items[item.itemId] != 0 && seller.authority);
+                && seller.items[itemId] != 0 && seller.authority);
 
-        buyer.items[item.itemId]++;
+        buyer.items[itemId]++;
         buyer.money -= tradePrice;
 
-        seller.items[item.itemId]--;
+        seller.items[itemId]--;
         seller.money += tradePrice;
 
         item.tradeCount++;

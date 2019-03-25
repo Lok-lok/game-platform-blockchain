@@ -1,4 +1,12 @@
+var userTypeHTML = {
+  0 : "admin.html",
+  1 : "publisher.html",
+  2 : "user.html",
+  3 : "unregistered.html"
+},
+  
 App = {
+  
   loading: false,
   contracts: {},
 
@@ -7,6 +15,7 @@ App = {
     await App.loadAccount()
     await App.loadContract()
     await App.render()
+    await App.redirect()
   },
 
   loadWeb3: async () => {
@@ -57,8 +66,8 @@ App = {
   },
 
   render: async () => {
-    App.loader = $("#loader");
-    App.content = $("#content");
+    App.divRedirect = $("#redirect")
+    App.divLoad = $("#load")
     
     App.setLoading(true)
     
@@ -69,15 +78,22 @@ App = {
   },
 
   userType: async () => {
+    var type = await App.Platform.userType()
+    return type.c[0]
+  },
+  
+  redirect: async() => {
+    var type = await App.userType()
+    window.location.href = userTypeHTML[type]
   },
   
   setLoading: async (boolean) => {
     if (boolean) {
-      App.loader.show();
-      App.content.hide();
+      App.divRedirect.hide()
+      App.divLoad.show()
     } else {
-      App.loader.hide();
-      App.content.show();
+      App.divRedirect.show()
+      App.divLoad.hide()
     }
   },
 }

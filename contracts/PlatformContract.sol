@@ -47,14 +47,23 @@ contract PlatformContract {
         bool regeisted;
         uint releasdCount;
     }
+    
+    struct Offer {
+        address seller;
+        uint itemId;
+        uint price;
+    }
 
     address public administrator;
     mapping(address => User) public users; 
     mapping(address => Publisher) public publishers;
     Item[] public items; 
+    mapping(uint => Offer) public offers;
+    uint globalOfferId;
 
     constructor() public {
         administrator = msg.sender;
+        globalOfferId = 0;
     }
 
     function regeisterPublisher() public {
@@ -113,22 +122,42 @@ contract PlatformContract {
         user.money -= item.price;
         item.selledCount++;
     }
-
-    function tradeItem(uint itemId, address sellerAddress, uint tradePrice) public {
-        User storage buyer = users[msg.sender];
-        User storage seller = users[sellerAddress];
+    
+    function makeOffer(uint itemId, uint tradePrice) public {
+        User storage seller = users[msg.sender];
         Item storage item = items[itemId];
+        
+        require(itemId > 0 && seller.regeisted && item.tradeable
+            && seller.items[itemId] != 0 && seller.authority);
+            
+        Offer memory offer;
+        offer.seller = msg.sender;
+        offer.itemId = itemId;
+        offer.price = tradePrice;
+        offers[globalOfferId++] = offer;
+    }
 
-        require(buyer.regeisted && itemId > 0 && seller.regeisted && item.tradeable && tradePrice >= 0
+    function tradeItem(uint offerId) public {
+        User storage buyer = users[msg.sender];
+        User storage seller = users[offers[offerId].seller];
+        uint itemId = offers[offerId].itemId;
+        Item storage item = items[itemId];
+        uint tradePrice = offers[offerId].price;
+
+        require(buyer.regeisted && itemId > 0 && seller.regeisted && item.tradeable
                 && buyer.money >= item.price && buyer.authority 
                 && (item.repeatable == true || buyer.items[itemId] == 0)
                 && seller.items[itemId] != 0 && seller.authority);
 
+        // mapping generates default value
         buyer.items[itemId]++;
         buyer.money -= tradePrice;
 
         seller.items[itemId]--;
         seller.money += tradePrice;
+        if (seller.items[itemId] <= 0) {
+            delete seller.items[itemId];
+        }
 
         item.tradeCount++;
     }
@@ -136,6 +165,7 @@ contract PlatformContract {
     function banUser(address userAddress) public {
         require(msg.sender == administrator);
         users[userAddress].authority = false;
+        // TODO: revoke all the offers posted
     }
 
     function unbanUser(address userAddress) public {

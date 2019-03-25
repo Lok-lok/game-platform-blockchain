@@ -171,21 +171,6 @@ App = {
     })
   },
 
-  userRegeister: async () => {
-  },
-
-  userRecharge: async () => {
-  },
-
-  userPostOffer: async () => {
-  },
-
-  userBuy: async () => {
-  },
-
-  userTrade: async () => {
-  },
-
 
   publiserRegeister: async () => {
   },
@@ -197,18 +182,6 @@ App = {
   },
   
   publiserQueryselledCount: async () => {
-  },
-  
-  banUser: async () => {
-  },
-
-  unBanUser: async () => {
-  },
-
-  banPublisher: async () => {
-  },
-
-  unBanPublisher: async () => {
   },
 
   

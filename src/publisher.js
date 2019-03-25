@@ -1,6 +1,21 @@
+ID2Name = {},
+name2ID = {},
+ID2Type = {
+    0 : "GAME",
+    1 : "SKIN",
+    2 : "CG"
+  },
+type2ID = {
+    "GAME" : 0,
+    "SKIN" : 1,
+    "CG"   : 2
+},
+
+
 App = {
   loading: false,
   contracts: {},
+  itemToShowTradeCount: 0,
 
 
   load: async () => {
@@ -62,11 +77,8 @@ App = {
     App.content = $("#content");
     App.setLoading(true)
 
-    // Render Account
     $('#accountAddress').html(App.account)
     await App.renderItems()
-    await App.renderTradeCount()
-    await App.renderselledCount()
 
     App.setLoading(false)
   },
@@ -75,25 +87,31 @@ App = {
     const releasedCount = await App.Platform.getReleasedCount()
     for (var i = 0; i < releasedCount; i++) {
       const itemId = await App.Platform.getReleasedItemId(i)
-      const type =  await App.Platform.items(i).type()
-      $("#ReleasedItems").append("<tr><th>" + id2Name(itemId) + "</th><td>" + type + "</td></tr>")
+      const typeID =  await App.Platform.getTypeId(itemId);
+      $("#ReleasedItems").append("<tr><th>" + ID2Name[itemId] + "</th><td>" + ID2Type[typeID] + "</td></tr>")
     }
   },
   
-  renderTradeCount(): async () => {
-  },
-
-  renderselledCount(): async () => {
-  },
-
   publisherRelease: async () => {
+    var itemId = await App.Platform.globalItemId;
+    var itemName = $('#itemName').val();
+    var itemType = $('#itemType').val();
+    var itemPrice = parseInt($('#itemPrice').val());
+    var repeatable = $('#itemRepeatable').val();
+
+    name2ID[itemName] = itemId;
+    ID2Name[itemId] = itemName;
+
+    await App.Platform.releaseItem(type2ID[itemType], itemId, itemPrice, repeatable);
+    window.location.reload();
+
   },
 
-  publisherQueryTradeCount: async () => {
-  },
+  // publisherQueryTradeCount: async () => {
+  // },
   
-  publisherQueryselledCount: async () => {
-  },
+  // publisherQueryselledCount: async () => {
+  // },
 
   
   setLoading: async (boolean) => {

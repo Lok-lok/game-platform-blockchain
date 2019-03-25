@@ -26,7 +26,6 @@ contract PlatformContract {
     }
 
     /*  Item released by publisher, can be selled by publisher or traded between user
-     *  gameId: the item id of its related game 
      *  itmeId: Id of its self (increasing when releasing new item, start from 1 !!!)
      *  price:  price of item setted by publisher or administrator
      *  selledCount: recorded how many this items has been selled by publisher
@@ -36,8 +35,7 @@ contract PlatformContract {
      */
     struct Item {
         address publisherAdress;
-        uint type;
-        uint gameId; 
+        uint typeId;
         uint itemId; 
         uint price;
         uint selledCount;
@@ -57,7 +55,7 @@ contract PlatformContract {
         bool authority;
         bool regeisted;
         bool exists;
-        uint releasdCount;
+        uint releasedCount;
     }
     
     struct Offer {
@@ -73,10 +71,12 @@ contract PlatformContract {
     Item[] public items; 
     mapping(uint => Offer) public offers;
     uint globalOfferId; // start from 1/ 0 means null
+    uint public globalItemId; // start from 1/ 0 means null
 
     constructor() public {
         administrator = msg.sender;
         globalOfferId = 1;
+        globalItemId = 1;
     }
 
     function registerPublisher() public {
@@ -89,15 +89,16 @@ contract PlatformContract {
         publishers[msg.sender] = p;
     }
 
-    function releaseItem(uint type, uint gameId, uint itemId, uint price, bool repeatable) public {
+    function releaseItem(uint typeId, uint itemId, uint price, bool repeatable) public {
         require(publishers[msg.sender].regeisted && publishers[msg.sender].authority
-                 && price >= 0 && gameId <= itemId && itemId > 0);
+                 && price >= 0 && itemId > 0);
 
-        Item memory newItem = Item(msg.sender, type, gameId, itemId, price, 0, 0, repeatable, true);
+        Item memory newItem = Item(msg.sender, typeId, itemId, price, 0, 0, repeatable, true);
         items.push(newItem);
 
         Publisher storage p = publishers[msg.sender];
-        p.releasedItems[p.releasdCount++] = newItem;
+        p.releasedItems[p.releasedCount++] = newItem;
+        globalItemId++;
     }
 
     function deleteItem(uint itemId) public {
@@ -226,6 +227,10 @@ contract PlatformContract {
     
     function getReleasedItemId(uint i) public view returns (uint) {
         return publishers[msg.sender].releasedItems[i].itemId;
+    }
+
+    function getTypeId(uint i) public view returns (uint) {
+        return items[i].typeId;
     }
 
     function userType() public view returns (EntityType) {

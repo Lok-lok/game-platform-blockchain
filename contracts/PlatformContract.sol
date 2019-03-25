@@ -23,8 +23,6 @@ contract PlatformContract {
 
         mapping(uint => uint) offers;
         uint offerCount;
-        
-        bool exists;
     }
 
     /*  Item released by publisher, can be selled by publisher or traded between user
@@ -58,8 +56,6 @@ contract PlatformContract {
         bool authority;
         bool regeisted;
         uint releasdCount;
-        
-        bool exists;
     }
     
     struct Offer {
@@ -81,7 +77,7 @@ contract PlatformContract {
         globalOfferId = 1;
     }
 
-    function regeisterPublisher() public {
+    function registerPublisher() public {
         require(msg.sender != administrator && !users[msg.sender].regeisted && !publishers[msg.sender].regeisted);
 
         Publisher memory p;
@@ -89,8 +85,6 @@ contract PlatformContract {
         p.regeisted = true;
 
         publishers[msg.sender] = p;
-        
-        p.exists = true;
     }
 
     function releaseItem(uint gameId, uint itemId, uint price, bool repeatable) public {
@@ -109,7 +103,7 @@ contract PlatformContract {
         items[itemId].tradeable = false;
     }
 
-    function regeisterUser() public {
+    function registerUser() public {
         require(msg.sender != administrator && !users[msg.sender].regeisted && !publishers[msg.sender].regeisted);
 
         User memory u;
@@ -119,8 +113,6 @@ contract PlatformContract {
         u.authority = true;
 
         users[msg.sender] = u;
-        
-        u.exists = true;
     }
 
     function addMoney (uint8 count) public {
@@ -230,10 +222,10 @@ contract PlatformContract {
         if (msg.sender == administrator) {
             return EntityType.Administrator;
         }
-        if (publishers[msg.sender].exists) {
+        if (publishers[msg.sender].regeisted) {
             return EntityType.Publisher;
         }
-        if (users[msg.sender].exists) {
+        if (users[msg.sender].regeisted) {
             return EntityType.User;
         }
         return EntityType.UnregisteredEntity;

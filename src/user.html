@@ -39,19 +39,15 @@
                 <div id="loader">
                     <p class="text-center">Loading...</p>
                 </div>
-                <div id="content" style="display: none;">
+                <div id="content">
 
                     <div id="voter">
                         <div id="vote">
 
                             <h2>Make Item Offer</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.userPostOffer()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">General Game Id</label>
-                                        <input type="text" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
-                                    </div>
                                     <div class="form-group">
                                         <label for="game">Item Id</label>
                                         <input type="text" class="form-control" id="itemId" placeholder="Enter item Id" name="itemId">
@@ -60,16 +56,12 @@
                                         <label for="game">Price</label>
                                         <input type="text" class="form-control" id="price" placeholder="Enter $$$" name="price">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="game">Sell or Buy</label>
-                                        <input type="text" class="form-control" id="type" placeholder="Sell or Buy" name="price">
-                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Make Item Offer</button>
                                 <hr />
                             </form>
                             <h2>Cancel Item Offer</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.userCancelOffer()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
                                     <div class="form-group">
@@ -81,7 +73,7 @@
                                 <hr />
                             </form>
                             <h2>Accept Item Offer</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.userTrade()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
                                     <div class="form-group">

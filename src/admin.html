@@ -39,12 +39,12 @@
                 <div id="loader">
                     <p class="text-center">Loading...</p>
                 </div>
-                <div id="content" style="display: none;">
+                <div id="content">
 
                     <div id="voter">
                         <div id="vote">
                             <h2>Ban User</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.banUser()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
                                     <div class="form-group">
@@ -56,7 +56,7 @@
                                 <hr />
                             </form>
                             <h2>Ban Publisher</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.banPublisher()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
                                     <div class="form-group">
@@ -68,7 +68,7 @@
                                 <hr />
                             </form>
                             <h2>Unban User</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.unbanUser()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
                                     <div class="form-group">
@@ -80,7 +80,7 @@
                                 <hr />
                             </form>
                             <h2>Unban Publisher</h2>
-                            <form onSubmit="App.releaseItem()">
+                            <form onSubmit="App.unbanPublisher()">
                                 <div class="form-group">
                                     <label for="candidatesSelect"></label>
                                     <div class="form-group">

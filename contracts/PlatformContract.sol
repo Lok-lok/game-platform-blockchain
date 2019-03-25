@@ -2,6 +2,13 @@ pragma solidity >=0.4.22 <0.6.0;
 
 contract PlatformContract {
 
+    enum EntityType {
+        Administrator,
+        Publisher,
+        User,
+        UnregisteredEntity
+    }
+
     /*  Normal User who can buy or sell items
      *  items: number for each item he owned
      *  itemNumber: number of item he owned
@@ -16,8 +23,9 @@ contract PlatformContract {
 
         mapping(uint => uint) offers;
         uint offerCount;
+        
+        bool exists;
     }
-    
 
     /*  Item released by publisher, can be selled by publisher or traded between user
      *  gameId: the item id of its related game 
@@ -50,6 +58,8 @@ contract PlatformContract {
         bool authority;
         bool regeisted;
         uint releasdCount;
+        
+        bool exists;
     }
     
     struct Offer {
@@ -79,6 +89,8 @@ contract PlatformContract {
         p.regeisted = true;
 
         publishers[msg.sender] = p;
+        
+        p.exists = true;
     }
 
     function releaseItem(uint gameId, uint itemId, uint price, bool repeatable) public {
@@ -107,6 +119,8 @@ contract PlatformContract {
         u.authority = true;
 
         users[msg.sender] = u;
+        
+        u.exists = true;
     }
 
     function addMoney (uint8 count) public {
@@ -202,13 +216,26 @@ contract PlatformContract {
         publishers[publisherAddress].authority = true;
     }
 
-    function getTradeCount(uint itemId) public returns (uint) {
+    function getTradeCount(uint itemId) public view returns (uint) {
         require(msg.sender == items[itemId].publisherAdress);
         return items[itemId].tradeCount;
     }
 
-    function getSelledCount(uint itemId) public returns (uint) {
+    function getSelledCount(uint itemId) public view returns (uint) {
         require(msg.sender == items[itemId].publisherAdress);
         return items[itemId].selledCount;
+    }
+    
+    function userType() public view returns (EntityType) {
+        if (msg.sender == administrator) {
+            return EntityType.Administrator;
+        }
+        if (publishers[msg.sender].exists) {
+            return EntityType.Publisher;
+        }
+        if (users[msg.sender].exists) {
+            return EntityType.User;
+        }
+        return EntityType.UnregisteredEntity;
     }
 }

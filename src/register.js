@@ -1,10 +1,3 @@
-var userTypeHTML = {
-  0 : "admin.html",
-  1 : "publisher.html",
-  2 : "user.html",
-  3 : "register.html"
-},
-  
 App = {
   
   loading: false,
@@ -15,7 +8,6 @@ App = {
     await App.loadAccount()
     await App.loadContract()
     await App.render()
-    await App.redirect()
   },
 
   loadWeb3: async () => {
@@ -77,14 +69,18 @@ App = {
     App.setLoading(false)
   },
 
-  userType: async () => {
-    var type = await App.Platform.userType()
-    return type.c[0]
+  registerUser: async () => {
+    await App.Platform.registerUser()
+    App.redirect()
+  },
+
+  registerPublisher: async () => {
+    await App.Platform.registerPublisher()
+    App.redirect()
   },
   
   redirect: async () => {
-    var type = await App.userType()
-    window.location.href = userTypeHTML[type]
+    window.location.href = "index.html"
   },
   
   setLoading: async (boolean) => {

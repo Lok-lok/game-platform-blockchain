@@ -39,7 +39,7 @@
                 <div id="loader">
                     <p class="text-center">Loading...</p>
                 </div>
-                <div id="content" style="display: none;">
+                <div id="content">
                     <h2>Game History</h2>
                     <form onSubmit="App.getGameHistory()">
                         <div class="form-group">
@@ -87,20 +87,24 @@
                         <hr />
                     </form>
                     <h2>Release New Item</h2>
-                    <form onSubmit="App.releaseItem()">
+                    <form onSubmit="App.publisherRelease()">
                         <div class="form-group">
                             <label for="candidatesSelect"></label>
                             <div class="form-group">
-                                <label for="game">General Game Id</label>
-                                <input type="text" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
+                                <label for="itemName">Item Name</label>
+                                <input type="text" class="form-control" id="itemName" placeholder="Enter item name" name="itemName">
                             </div>
                             <div class="form-group">
-                                <label for="game">Item Id</label>
-                                <input type="text" class="form-control" id="itemId" placeholder="Enter item Id" name="itemId">
+                                <label for="itemType">Item Type</label>
+                                <input type="text" class="form-control" id="itemType" placeholder="Enter item type" name="itemType">
                             </div>
                             <div class="form-group">
-                                <label for="game">Price</label>
-                                <input type="text" class="form-control" id="price" placeholder="Enter $$$" name="price">
+                                <label for="itemPrice">Item Price</label>
+                                <input type="text" class="form-control" id="itemPrice" placeholder="Enter $$$" name="itemPrice">
+                            </div>
+                            <div class="form-group">
+                                <label for="itemRepeatable">Repeatable?</label>
+                                <input type="text" class="form-control" id="itemRepeatable" placeholder="Enter Repeatable" name="itemRepeatable">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Release New Item</button>

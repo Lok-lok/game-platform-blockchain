@@ -13,6 +13,9 @@ contract PlatformContract {
         uint money;
         bool authority;
         bool regeisted;
+
+        mapping(uint => uint) offers;
+        uint offerCount;
     }
     
 
@@ -49,9 +52,10 @@ contract PlatformContract {
     }
     
     struct Offer {
-        address seller;
+        address sellerAdress;
         uint itemId;
         uint price;
+        bool active;
     }
 
     address public administrator;
@@ -59,11 +63,11 @@ contract PlatformContract {
     mapping(address => Publisher) public publishers;
     Item[] public items; 
     mapping(uint => Offer) public offers;
-    uint globalOfferId;
+    uint globalOfferId; // start from 1/ 0 means null
 
     constructor() public {
         administrator = msg.sender;
-        globalOfferId = 0;
+        globalOfferId = 1;
     }
 
     function regeisterPublisher() public {
@@ -81,11 +85,9 @@ contract PlatformContract {
                  && price >= 0 && gameId <= itemId && itemId > 0);
 
         Item memory newItem = Item(gameId, itemId, price, 0, 0, repeatable, true);
-
         items.push(newItem);
 
         Publisher storage p = publishers[msg.sender];
-
         p.releasedItems[p.releasdCount++] = newItem;
     }
 
@@ -99,6 +101,7 @@ contract PlatformContract {
 
         User memory u;
         u.money = 0;
+        u.offerCount = 0;
         u.regeisted = true;
         u.authority = true;
 
@@ -116,7 +119,7 @@ contract PlatformContract {
         Item storage item = items[itemId];
         require(user.regeisted && itemId > 0 && item.tradeable
                 && user.money >= item.price && user.authority 
-                && (item.repeatable == true || user.items[itemId] == 0 ));
+                && (item.repeatable == true || user.items[itemId] == 0));
 
         user.items[itemId]++;
         user.money -= item.price;
@@ -128,23 +131,36 @@ contract PlatformContract {
         Item storage item = items[itemId];
         
         require(itemId > 0 && seller.regeisted && item.tradeable
-            && seller.items[itemId] != 0 && seller.authority);
+            && seller.items[itemId] > 0 && seller.authority);
             
         Offer memory offer;
-        offer.seller = msg.sender;
+        offer.sellerAdress = msg.sender;
         offer.itemId = itemId;
         offer.price = tradePrice;
-        offers[globalOfferId++] = offer;
+        offer.active = true;
+
+        offers[globalOfferId] = offer;
+        seller.offers[seller.offerCount++] = globalOfferId;
+
+        seller.items[itemId]--;
+        globalOfferId++;
     }
+
+    function recallOffer(uint offerId) public {
+        require(offerId > 0 && offers[offerId].sellerAdress == msg.sender && users[msg.sender].regeisted);
+        users[msg.sender].items[offers[offerId].itemId]++;
+        offers[offerId].active = false;
+    }
+
 
     function tradeItem(uint offerId) public {
         User storage buyer = users[msg.sender];
-        User storage seller = users[offers[offerId].seller];
+        User storage seller = users[offers[offerId].sellerAdress];
         uint itemId = offers[offerId].itemId;
         Item storage item = items[itemId];
         uint tradePrice = offers[offerId].price;
 
-        require(buyer.regeisted && itemId > 0 && seller.regeisted && item.tradeable
+        require(buyer.regeisted && itemId > 0 && seller.regeisted && item.tradeable && offers[offerId].active
                 && buyer.money >= item.price && buyer.authority 
                 && (item.repeatable == true || buyer.items[itemId] == 0)
                 && seller.items[itemId] != 0 && seller.authority);

@@ -29,6 +29,7 @@ contract PlatformContract {
      *  tradeable:  whether this item can be traded (both between publisher and user / user and user)
      */
     struct Item {
+        address publisherAdress;
         uint gameId; 
         uint itemId; 
         uint price;
@@ -84,7 +85,7 @@ contract PlatformContract {
         require(publishers[msg.sender].regeisted && publishers[msg.sender].authority
                  && price >= 0 && gameId <= itemId && itemId > 0);
 
-        Item memory newItem = Item(gameId, itemId, price, 0, 0, repeatable, true);
+        Item memory newItem = Item(msg.sender, gameId, itemId, price, 0, 0, repeatable, true);
         items.push(newItem);
 
         Publisher storage p = publishers[msg.sender];
@@ -199,5 +200,15 @@ contract PlatformContract {
     function unbanPublisher(address publisherAddress) public {
         require(msg.sender == administrator);
         publishers[publisherAddress].authority = true;
+    }
+
+    function getTradeCount(uint itemId) public returns (uint) {
+        require(msg.sender == items[itemId].publisherAdress);
+        return items[itemId].tradeCount;
+    }
+
+    function getSelledCount(uint itemId) public returns (uint) {
+        require(msg.sender == items[itemId].publisherAdress);
+        return items[itemId].selledCount;
     }
 }

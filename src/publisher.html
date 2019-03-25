@@ -71,7 +71,7 @@
                     </form>
 
                     <h2>Delete Item</h2>
-                    <form onSubmit="App.getItemHistory()">
+                    <form onSubmit="App.deleteItem()">
                         <div class="form-group">
                             <label for="candidatesSelect"></label>
                             <div class="form-group">
@@ -110,21 +110,9 @@
                         <button type="submit" class="btn btn-primary">Release New Item</button>
                         <hr />
                     </form>
-                    <h2>Ban User</h2>
-                    <form onSubmit="App.releaseItem()">
-                        <div class="form-group">
-                            <label for="candidatesSelect"></label>
-                            <div class="form-group">
-                                <label for="game">User Id</label>
-                                <input type="text" class="form-control" id="userId" placeholder="Enter user Id" name="userId">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Ban User</button>
-                        <hr />
-                    </form>
 
                     <h2>Average Sell Price of Item</h2>
-                    <form onSubmit="App.releaseItem()">
+                    <form onSubmit="App.avgSellPrice()">
                         <div class="form-group">
                             <label for="candidatesSelect"></label>
                             <div class="form-group">

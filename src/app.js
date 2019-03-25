@@ -48,12 +48,12 @@ App = {
 
   loadContract: async () => {
     // Create a JavaScript version of the smart contract
-    const votingContract = await $.getJSON('VotingContract.json')
-    App.contracts.Voting = TruffleContract(votingContract)
-    App.contracts.Voting.setProvider(App.web3Provider)
+    const  PlatformContract = await $.getJSON('PlatformContract.json')
+    App.contracts.Platform = TruffleContract(PlatformContract)
+    App.contracts.Platform.setProvider(App.web3Provider)
 
     // Hydrate the smart contract with values from the blockchain
-    App.voting = await App.contracts.Voting.deployed()
+    App.Platform = await App.contracts.Platform.deployed()
   },
 
   render: async () => {
@@ -171,38 +171,46 @@ App = {
     })
   },
 
-  castVote: async () => {
-    App.setLoading(true)
-    var candidateId = $('#candidatesSelect').val();
-    await App.voting.vote(candidateId)
-    window.location.reload()
+  userRegeister: async () => {
   },
 
-  unvote: async () => {
-    App.setLoading(true)
-    await App.voting.unvote()
-    window.location.reload()
+  userRecharge: async () => {
+  },
+
+  userPostOffer: async () => {
+  },
+
+  userBuy: async () => {
+  },
+
+  userTrade: async () => {
+  },
+
+
+  publiserRegeister: async () => {
+  },
+
+  publiserRelease: async () => {
+  },
+
+  publiserQueryTradeCount: async () => {
   },
   
-  // TODO: banVote & allowVote
-  
-  startVoting: async () => {
-    App.setLoading(true)
-    await App.voting.startVoting()
-    window.location.reload()
+  publiserQueryselledCount: async () => {
   },
   
-  endVoting: async () => {
-    App.setLoading(true)
-    await App.voting.endVoting()
-    window.location.reload()
+  banUser: async () => {
   },
-  
-  decideWin: async () => {
-    App.setLoading(true)
-    await App.voting.decideWin()
-    window.location.reload()
+
+  unBanUser: async () => {
   },
+
+  banPublisher: async () => {
+  },
+
+  unBanPublisher: async () => {
+  },
+
   
   setLoading: async (boolean) => {
     if (boolean) {

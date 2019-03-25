@@ -147,7 +147,8 @@ contract PlatformContract {
     }
 
     function recallOffer(uint offerId) public {
-        require(offerId > 0 && offers[offerId].sellerAdress == msg.sender && users[msg.sender].regeisted);
+        require(offerId > 0 && offers[offerId].sellerAdress == msg.sender 
+                && users[msg.sender].regeisted && offers[offerId].active);
         users[msg.sender].items[offers[offerId].itemId]++;
         offers[offerId].active = false;
     }

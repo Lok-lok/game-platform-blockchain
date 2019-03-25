@@ -2,7 +2,7 @@ var userTypeHTML = {
   0 : "admin.html",
   1 : "publisher.html",
   2 : "user.html",
-  3 : "unregistered.html"
+  3 : "register.html"
 },
   
 App = {
@@ -66,8 +66,8 @@ App = {
   },
 
   render: async () => {
-    App.divRedirect = $("#redirect")
-    App.divLoad = $("#load")
+    App.loader = $("#loader")
+    App.content = $("#content")
     
     App.setLoading(true)
     
@@ -82,18 +82,18 @@ App = {
     return type.c[0]
   },
   
-  redirect: async() => {
+  redirect: async () => {
     var type = await App.userType()
     window.location.href = userTypeHTML[type]
   },
   
   setLoading: async (boolean) => {
     if (boolean) {
-      App.divRedirect.hide()
-      App.divLoad.show()
+      App.loader.show();
+      App.content.hide();
     } else {
-      App.divRedirect.show()
-      App.divLoad.hide()
+      App.loader.hide();
+      App.content.show();
     }
   },
 }

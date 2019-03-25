@@ -176,6 +176,7 @@ contract PlatformContract {
         }
 
         item.tradeCount++;
+        offers[offerId].active = false;
     }
 
     function banUser(address userAddress) public {

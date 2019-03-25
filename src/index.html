@@ -1,39 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
     <title>Game Platform</title>
 
     <!-- Bootstrap -->
     <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  </head>
-  <body>
-    <div class="container" style="width: 650px;">
-      <div class="row">
-        <div class="col-lg-12">
-          <h1 class="text-center">Game Platform</h1>
-          <hr/>
-          <br/>
-          <div id="loader">
-            <p class="text-center">Loading...</p>
-          </div>
-          <div id="content" style="display: none;">
-            <p class="text-center">Redirecting...</p>
-            <hr/>
-            <p id="accountAddress" class="text-center"></p>
-          </div>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Game Platform</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="index.html">Home</a></li>
+                <li><a href="publisher.html">Publishers</a></li>
+                <li><a href="user.html">User</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
         </div>
-      </div>
+    </nav>
+    <div class="container" style="width: 650px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="text-center">Welcome to the Game Platform!</h1>
+                <hr/>
+                <br/>
+                <div id="loader">
+                    <p class="text-center">Loading...</p>
+                </div>
+                <div id="content" style="display: none;">
+                    <p class="text-center">Redirecting...</p>
+                    <hr/>
+                    <p id="accountAddress" class="text-center"></p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
+
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
     <script src="index.js"></script>
-  </body>
+</body>
+
 </html>

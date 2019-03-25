@@ -1,91 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
     <title>Game Platform</title>
 
     <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-  </head>
-  <body>
-    <div class="container" style="width: 650px;">
-      <div class="row">
-        <div class="col-lg-12">
-          <h1 class="text-center">User</h1>
-          <hr/>
-          <br/>
-          <div id="loader">
-            <p class="text-center">Loading...</p>
-          </div>
-          <div id="content" style="display: none;">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Votes</th>
-                </tr>
-              </thead>
-              <tbody id="candidatesResults">
-              </tbody>
-            </table>
-            <p id="winner" class="text-center"></p>
-            <hr/>
-            <p id="status" class="text-center"></p>
-            <div id="chairperson">
-              <div id="startVoting">
-                <button onClick="App.startVoting();">Start Voting</button>
-              </div>
-              <div id="endVoting">
-                <button onClick="App.endVoting();">End Voting</button>
-              </div>
-              <button onClick="App.decideWin();">Get the Winner</button>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Game Platform</a>
             </div>
-            <hr/>
-            <div id="voter">
-              <div id="vote">
-                <form onSubmit="App.castVote();">
-                  <div class="form-group">
-                    <label for="candidatesSelect">Select Candidate</label>
-                    <select class="form-control" id="candidatesSelect">
-                    </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Vote</button>
-                </form>
-              </div>
-              <div id="unvote">
-                <p id="voteFor" class="text-center"></p>
-                <p id="normal_ban" class="text-center"></p>
-                <button onClick="App.unvote();">Unvote</button>
-              </div>
-            </div>
-            <p id="accountAddress" class="text-center"></p>
-            <hr/>
-            
-            <h4 class="text-center">History</h4>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">Voter</th>
-                  <th scope="col">Timestamp</th>
-                </tr>
-              </thead>
-              <tbody id="history">
-              </tbody>
-            </table>
-          </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="publisher.html">Publishers</a></li>
+                <li class="active"><a href="user.html">User</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
         </div>
-      </div>
+    </nav>
+    <div class="container" style="width: 650px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="text-center">User</h1>
+                <hr/>
+                <br/>
+                <div id="loader">
+                    <p class="text-center">Loading...</p>
+                </div>
+                <div id="content">
+
+                    <div id="voter">
+                        <div id="vote">
+
+                            <h2>Make Item Offer</h2>
+                            <form onSubmit="App.releaseItem()">
+                                <div class="form-group">
+                                    <label for="candidatesSelect"></label>
+                                    <div class="form-group">
+                                        <label for="game">General Game Id</label>
+                                        <input type="email" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="game">Item Id</label>
+                                        <input type="email" class="form-control" id="itemId" placeholder="Enter item Id" name="itemId">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="game">Price</label>
+                                        <input type="email" class="form-control" id="price" placeholder="Enter $$$" name="price">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="game">Sell or Buy</label>
+                                        <input type="email" class="form-control" id="price" placeholder="Sell or Buy" name="price">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Make Item Offer</button>
+                                <hr />
+                            </form>
+                            <h2>Cancel Item Offer</h2>
+                            <form onSubmit="App.releaseItem()">
+                                <div class="form-group">
+                                    <label for="candidatesSelect"></label>
+                                    <div class="form-group">
+                                        <label for="game">Offer Id</label>
+                                        <input type="email" class="form-control" id="offerId" placeholder="Enter offer Id" name="gameId">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Cancel Item Offer</button>
+                                <hr />
+                            </form>
+                            <h2>Accept Item Offer</h2>
+                            <form onSubmit="App.releaseItem()">
+                                <div class="form-group">
+                                    <label for="candidatesSelect"></label>
+                                    <div class="form-group">
+                                        <label for="game">Offer Id</label>
+                                        <input type="email" class="form-control" id="offerId" placeholder="Enter offer Id" name="gameId">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Accept Item Offer</button>
+                                <hr />
+                            </form>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    
+
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
     <script src="app.js"></script>
-  </body>
+</body>
+
 </html>

@@ -38,6 +38,7 @@ contract PlatformContract {
      */
     struct Item {
         address publisherAdress;
+        uint type;
         uint gameId; 
         uint itemId; 
         uint price;
@@ -57,8 +58,8 @@ contract PlatformContract {
         mapping(uint => Item) releasedItems; 
         bool authority;
         bool regeisted;
-        uint releasdCount;
-        
+        uint releasedCount;
+    
         bool exists;
     }
     
@@ -93,11 +94,11 @@ contract PlatformContract {
         p.exists = true;
     }
 
-    function releaseItem(uint gameId, uint itemId, uint price, bool repeatable) public {
+    function releaseItem(uint type, uint gameId, uint itemId, uint price, bool repeatable) public {
         require(publishers[msg.sender].regeisted && publishers[msg.sender].authority
                  && price >= 0 && gameId <= itemId && itemId > 0);
 
-        Item memory newItem = Item(msg.sender, gameId, itemId, price, 0, 0, repeatable, true);
+        Item memory newItem = Item(msg.sender, type, gameId, itemId, price, 0, 0, repeatable, true);
         items.push(newItem);
 
         Publisher storage p = publishers[msg.sender];
@@ -225,7 +226,15 @@ contract PlatformContract {
         require(msg.sender == items[itemId].publisherAdress);
         return items[itemId].selledCount;
     }
+
+    function getReleasedCount() public view returns (uint) {
+        return publishers[msg.sender].releasedCount;
+    }
     
+    function getReleasedItemId(uint i) public view returns (uint) {
+        return publishers[msg.sender].releasedItems[i].itemId;
+    }
+
     function userType() public view returns (EntityType) {
         if (msg.sender == administrator) {
             return EntityType.Administrator;

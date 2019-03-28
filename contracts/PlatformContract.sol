@@ -42,6 +42,8 @@ contract PlatformContract {
         uint tradeCount;
         bool repeatable;
         bool tradeable;
+
+        string name;
     }
 
     /*  Publisher who can publish game or related Items
@@ -89,11 +91,11 @@ contract PlatformContract {
         publishers[msg.sender] = p;
     }
 
-    function releaseItem(uint typeId, uint itemId, uint price, bool repeatable) public {
+    function releaseItem(uint typeId, uint itemId, uint price, bool repeatable, string memory itemName) public {
         require(publishers[msg.sender].regeisted && publishers[msg.sender].authority
                  && price >= 0 && itemId > 0);
 
-        Item memory newItem = Item(msg.sender, typeId, itemId, price, 0, 0, repeatable, true);
+        Item memory newItem = Item(msg.sender, typeId, itemId, price, 0, 0, repeatable, true, itemName);
         items[globalItemId++] = newItem;
 
         Publisher storage p = publishers[msg.sender];
@@ -234,6 +236,10 @@ contract PlatformContract {
 
     function getPrice(uint itemId) public view returns (uint) {
         return items[itemId].price;
+    }
+
+    function getName(uint itemId) public view returns (string memory) {
+        return items[itemId].name;
     }
 
     function userType() public view returns (EntityType) {

@@ -40,16 +40,22 @@
                 Name:
                 <input type="text" id="itemName" >
                 <br>
-                Type:
-                <input type="text" id="itemType">
                 <br>
-                Price:
+                Price: 
                 <input type="number" id="itemPrice">
+                <br>
                 <br>
                 Limited?: 
                 <select class="form-control" id="itemRepeatable">
                   <option value= 1> True </option>
                   <option value= 0> False </option>
+                </select>
+                <br>
+                Type:
+                <select class="form-control" id="itemType">
+                  <option value= 0> Game </option>
+                  <option value= 1> Skin </option>
+                  <option value= 2> Coins </option>
                 </select>
               </div>
               <button type="submit" class="btn btn-primary">Release !!!</button>

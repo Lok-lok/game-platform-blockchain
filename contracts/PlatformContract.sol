@@ -68,7 +68,7 @@ contract PlatformContract {
     address public administrator;
     mapping(address => User) public users; 
     mapping(address => Publisher) public publishers;
-    Item[] public items; 
+    mapping(uint => Item) public items;
     mapping(uint => Offer) public offers;
     uint globalOfferId; // start from 1/ 0 means null
     uint public globalItemId; // start from 1/ 0 means null
@@ -94,11 +94,10 @@ contract PlatformContract {
                  && price >= 0 && itemId > 0);
 
         Item memory newItem = Item(msg.sender, typeId, itemId, price, 0, 0, repeatable, true);
-        items.push(newItem);
+        items[globalItemId++] = newItem;
 
         Publisher storage p = publishers[msg.sender];
         p.releasedItems[p.releasedCount++] = newItem;
-        globalItemId++;
     }
 
     function deleteItem(uint itemId) public {
@@ -118,7 +117,7 @@ contract PlatformContract {
         users[msg.sender] = u;
     }
 
-    function addMoney (uint8 count) public {
+    function addMoney (uint count) public {
         require(msg.sender != administrator && users[msg.sender].regeisted);
         users[msg.sender].money += count;
     }
@@ -229,8 +228,12 @@ contract PlatformContract {
         return publishers[msg.sender].releasedItems[i].itemId;
     }
 
-    function getTypeId(uint i) public view returns (uint) {
-        return items[i].typeId;
+    function getTypeId(uint itemId) public view returns (uint) {
+        return items[itemId].typeId;
+    }
+
+    function getPrice(uint itemId) public view returns (uint) {
+        return items[itemId].price;
     }
 
     function userType() public view returns (EntityType) {

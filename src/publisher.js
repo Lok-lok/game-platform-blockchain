@@ -1,5 +1,3 @@
-ID2Name = {},
-name2ID = {},
 ID2Type = {
     0 : "GAME",
     1 : "SKIN",
@@ -11,12 +9,12 @@ type2ID = {
     "CG"   : 2
 },
 
-
 App = {
   loading: false,
   contracts: {},
   itemToShowTradeCount: 0,
-
+  id2Name: {0:0},
+  name2ID: {"":0},
 
   load: async () => {
     await App.loadWeb3()
@@ -84,25 +82,33 @@ App = {
   },
 
   renderItems: async () => {
+
     const releasedCount = await App.Platform.getReleasedCount()
     for (var i = 0; i < releasedCount; i++) {
-      const itemId = await App.Platform.getReleasedItemId(i)
-      const typeID =  await App.Platform.getTypeId(itemId);
-      $("#ReleasedItems").append("<tr><th>" + ID2Name[itemId] + "</th><td>" + ID2Type[typeID] + "</td></tr>")
+      var itemId = (await App.Platform.getReleasedItemId(i)).toNumber();
+      var typeID =  (await App.Platform.getTypeId(itemId)).toNumber();
+      var itemPrice = (await App.Platform.getPrice(itemId)).toNumber();
+
+      console.log(App.ID2Name[itemId]);
+      console.log(App.name2ID[itemName]);
+
+      $("#ReleasedItems").append("<tr><th>" + App.id2Name[itemId] + "</th><td>" + ID2Type[typeID] + "</td><td>"
+                                + itemPrice+ "</td><tr>" )
     }
   },
   
   publisherRelease: async () => {
-    var itemId = await App.Platform.globalItemId;
+
+    var itemId = (await App.Platform.globalItemId()).toNumber();
     var itemName = $('#itemName').val();
     var itemType = $('#itemType').val();
     var itemPrice = parseInt($('#itemPrice').val());
     var repeatable = $('#itemRepeatable').val();
 
-    name2ID[itemName] = itemId;
-    ID2Name[itemId] = itemName;
+    App.name2ID[itemName] = itemId;
+    App.id2Name[itemId] = itemName;
 
-    await App.Platform.releaseItem(type2ID[itemType], itemId, itemPrice, repeatable);
+    await App.Platform.releaseItem(type2ID[itemType], itemId, itemPrice, !!repeatable);
     window.location.reload();
 
   },

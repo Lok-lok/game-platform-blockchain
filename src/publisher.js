@@ -77,15 +77,21 @@ App = {
 
   renderItems: async () => {
 
-    const releasedCount = await App.Platform.getReleasedCount()
+    const releasedCount = (await App.Platform.getReleasedCount()).toNumber();
     for (var i = 0; i < releasedCount; i++) {
       var itemId = (await App.Platform.getReleasedItemId(i)).toNumber();
       var itemType =  (await App.Platform.getTypeId(itemId)).toNumber();
       var itemPrice = (await App.Platform.getPrice(itemId)).toNumber();
-      var itemName = await App.Platform.getName(itemId);
+      var itemName = await App.Platform.getItemName(itemId);
 
-      $("#ReleasedItems").append("<tr><th>" + itemName + "</th><td>" + ID2TypeName[itemType] + "</td><td>"
-                                + itemPrice + " $"+ "</td><tr>" )
+      var allowQuery = await App.Platform.getAllowQuery(itemId);
+
+      var tradeCountStr = allowQuery ? (await App.Platform.getTradeCount(itemId)).toString() : "";
+      var sellCountStr = allowQuery ? (await App.Platform.getSellCount(itemId)).toString() : "";
+
+      $("#ReleasedItems").append("<tr><th>" + itemId + "</th><td>" + itemName + "</td><td>" + ID2TypeName[itemType] + "</td><td>"
+                                + (itemPrice + " $") + "</th><td>"+ tradeCountStr + "</th><td>" + sellCountStr + "</td><tr>" );
+
     }
   },
   
@@ -102,8 +108,11 @@ App = {
 
   },
 
-  // publisherQueryTradeCount: async () => {
-  // },
+  publisherQuery: async () => {
+    var itemId = parseInt($('#queryItem').val());
+    await App.Platform.allowQuery(itemId);
+    window.location.reload()
+  },
   
   // publisherQueryselledCount: async () => {
   // },

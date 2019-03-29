@@ -16,34 +16,37 @@ contract PlatformContract {
      *  regeisted: this user has been regeisted
      */
     struct User {
-        mapping(uint => uint) items; 
-        uint money;
+        mapping(uint8 => uint8) items; 
+        uint8 money;
         bool authority;
         bool regeisted;
 
-        mapping(uint => uint) offers;
-        uint offerCount;
+        mapping(uint8 => uint8) offers;
+        uint8 offerCount;
     }
 
     /*  Item released by publisher, can be selled by publisher or traded between user
      *  itmeId: Id of its self (increasing when releasing new item, start from 1 !!!)
      *  price:  price of item setted by publisher or administrator
-     *  selledCount: recorded how many this items has been selled by publisher
+     *  sellCount: recorded how many this items has been selled by publisher
      *  tradeCount: recorded how many this items has been traded between user
      *  repeatable: whether this item can be owned by user more than once (such as all game is unrepeatable)
      *  tradeable:  whether this item can be traded (both between publisher and user / user and user)
+     *  name: Name of this item
+     *  allowQuery: whether its publisher can get its traded count and selled count
      */
     struct Item {
         address publisherAdress;
-        uint typeId;
-        uint itemId; 
-        uint price;
-        uint selledCount;
-        uint tradeCount;
+        uint8 typeId;
+        uint8 itemId; 
+        uint8 price;
+        uint8 sellCount;
+        uint8 tradeCount;
         bool repeatable;
         bool tradeable;
 
-        string name;
+        string itemName;
+        bool allowQuery;
     }
 
     /*  Publisher who can publish game or related Items
@@ -53,27 +56,27 @@ contract PlatformContract {
      *  releasedCount: number of items released by this publisher
      */
     struct Publisher {
-        mapping(uint => Item) releasedItems; 
+        mapping(uint8 => Item) releasedItems; 
         bool authority;
         bool regeisted;
         bool exists;
-        uint releasedCount;
+        uint8 releasedCount;
     }
     
     struct Offer {
         address sellerAdress;
-        uint itemId;
-        uint price;
+        uint8 itemId;
+        uint8 price;
         bool active;
     }
 
     address public administrator;
     mapping(address => User) public users; 
     mapping(address => Publisher) public publishers;
-    mapping(uint => Item) public items;
-    mapping(uint => Offer) public offers;
-    uint globalOfferId; // start from 1/ 0 means null
-    uint public globalItemId; // start from 1/ 0 means null
+    mapping(uint8 => Item) public items;
+    mapping(uint8 => Offer) public offers;
+    uint8 public globalOfferId; // id prepared for next item / start from 1 and 0 means null
+    uint8 public globalItemId; // id prepared for next offer / start from 1 and 0 means null
 
     constructor() public {
         administrator = msg.sender;
@@ -81,9 +84,9 @@ contract PlatformContract {
         globalItemId = 1;
     }
 
+    // regeisting function
     function registerPublisher() public {
-        require(msg.sender != administrator && !users[msg.sender].regeisted && !publishers[msg.sender].regeisted);
-
+        require(isNobody(msg.sender));
         Publisher memory p;
         p.authority = true;
         p.regeisted = true;
@@ -91,25 +94,8 @@ contract PlatformContract {
         publishers[msg.sender] = p;
     }
 
-    function releaseItem(uint typeId, uint itemId, uint price, bool repeatable, string memory itemName) public {
-        require(publishers[msg.sender].regeisted && publishers[msg.sender].authority
-                 && price >= 0 && itemId > 0);
-
-        Item memory newItem = Item(msg.sender, typeId, itemId, price, 0, 0, repeatable, true, itemName);
-        items[globalItemId++] = newItem;
-
-        Publisher storage p = publishers[msg.sender];
-        p.releasedItems[p.releasedCount++] = newItem;
-    }
-
-    function deleteItem(uint itemId) public {
-        require(itemId > 0 && msg.sender == administrator);
-        items[itemId].tradeable = false;
-    }
-
     function registerUser() public {
-        require(msg.sender != administrator && !users[msg.sender].regeisted && !publishers[msg.sender].regeisted);
-
+        require(isNobody(msg.sender));
         User memory u;
         u.money = 0;
         u.offerCount = 0;
@@ -119,29 +105,34 @@ contract PlatformContract {
         users[msg.sender] = u;
     }
 
-    function addMoney (uint count) public {
-        require(msg.sender != administrator && users[msg.sender].regeisted);
+    // function for user
+
+    function addMoney (uint8 count) public {
+        require(isUser(msg.sender));
         users[msg.sender].money += count;
     }
 
-    function buyItem(uint itemId) public {
+    function buyItem(uint8 itemId) public {
+
+        require(isUser(msg.sender) && isValidItemId(itemId));
 
         User storage user = users[msg.sender];
         Item storage item = items[itemId];
-        require(user.regeisted && itemId > 0 && item.tradeable
+        require(item.tradeable
                 && user.money >= item.price && user.authority 
                 && (item.repeatable == true || user.items[itemId] == 0));
 
         user.items[itemId]++;
         user.money -= item.price;
-        item.selledCount++;
+        item.sellCount++;
     }
     
-    function makeOffer(uint itemId, uint tradePrice) public {
+    function makeOffer(uint8 itemId, uint8 tradePrice) public {
+        require(isUser(msg.sender) && isValidItemId(itemId));
         User storage seller = users[msg.sender];
         Item storage item = items[itemId];
         
-        require(itemId > 0 && seller.regeisted && item.tradeable
+        require(seller.regeisted && item.tradeable
             && seller.items[itemId] > 0 && seller.authority);
             
         Offer memory offer;
@@ -157,22 +148,26 @@ contract PlatformContract {
         globalOfferId++;
     }
 
-    function recallOffer(uint offerId) public {
-        require(offerId > 0 && offers[offerId].sellerAdress == msg.sender 
-                && users[msg.sender].regeisted && offers[offerId].active);
+    function recallOffer(uint8 offerId) public {
+        require(isUser(msg.sender));
+        require(offerId > 0 && offers[offerId].sellerAdress == msg.sender && offers[offerId].active);
         users[msg.sender].items[offers[offerId].itemId]++;
         offers[offerId].active = false;
     }
 
 
-    function tradeItem(uint offerId) public {
-        User storage buyer = users[msg.sender];
-        User storage seller = users[offers[offerId].sellerAdress];
-        uint itemId = offers[offerId].itemId;
-        Item storage item = items[itemId];
-        uint tradePrice = offers[offerId].price;
+    function tradeItem(uint8 offerId) public {
 
-        require(buyer.regeisted && itemId > 0 && seller.regeisted && item.tradeable && offers[offerId].active
+        address sellerAdress = offers[offerId].sellerAdress;
+        require(isUser(msg.sender) && isUser(sellerAdress));
+
+        User storage buyer = users[msg.sender];
+        User storage seller = users[sellerAdress];
+        uint8 itemId = offers[offerId].itemId;
+        Item storage item = items[itemId];
+        uint8 tradePrice = offers[offerId].price;
+
+        require(isValidItemId(itemId) && item.tradeable && offers[offerId].active
                 && buyer.money >= item.price && buyer.authority 
                 && (item.repeatable == true || buyer.items[itemId] == 0)
                 && seller.items[itemId] != 0 && seller.authority);
@@ -191,56 +186,124 @@ contract PlatformContract {
         offers[offerId].active = false;
     }
 
+    // function for publisher
+    function releaseItem(uint8 typeId, uint8 itemId, uint8 price, bool repeatable, string memory itemName) public {
+        //require(isPublisher(msg.sender));
+        require(publishers[msg.sender].authority && price >= 0);
+
+        Item memory newItem = Item(msg.sender, typeId, itemId, price, 0, 0, repeatable, true, itemName, false);
+        items[globalItemId++] = newItem;
+
+        Publisher storage p = publishers[msg.sender];
+        p.releasedItems[p.releasedCount++] = newItem;
+    }
+
+    function getReleasedCount() public view returns (uint8) {
+        require(isPublisher(msg.sender));
+        return publishers[msg.sender].releasedCount;
+    }
+    
+    function getReleasedItemId(uint8 i) public view returns (uint8) {
+        require(isPublisher(msg.sender));
+        require(i >= 0 && i < publishers[msg.sender].releasedCount);
+        return publishers[msg.sender].releasedItems[i].itemId;
+    }
+
+    function allowQuery(uint8 itemId) public {
+        require( isPublisher(msg.sender) && msg.sender == items[itemId].publisherAdress && isValidItemId(itemId));
+        items[itemId].allowQuery = true;
+    }
+
+
+    function getAllowQuery(uint8 itemId) public view returns (bool){
+        require( isPublisher(msg.sender) && msg.sender == items[itemId].publisherAdress && isValidItemId(itemId));
+        return items[itemId].allowQuery;
+    }
+
+    function getTradeCount(uint8 itemId) public view returns (uint8) {
+        require( isPublisher(msg.sender) && msg.sender == items[itemId].publisherAdress 
+                && isValidItemId(itemId) && items[itemId].allowQuery);
+        return items[itemId].tradeCount;
+    }
+
+    function getSellCount(uint8 itemId) public view returns (uint8) {
+        require( isPublisher(msg.sender) && msg.sender == items[itemId].publisherAdress 
+                && isValidItemId(itemId) && items[itemId].allowQuery);
+        return items[itemId].sellCount;
+    }
+
+    // function provided for administrator
     function banUser(address userAddress) public {
-        require(msg.sender == administrator);
+        require(isAdministrator(msg.sender) && isUser(userAddress));
         users[userAddress].authority = false;
-        // TODO: revoke all the offers posted
+        // TODO: revoke all the offers posted 
+        // Wei: just hide it on js layer?
     }
 
     function unbanUser(address userAddress) public {
-        require(msg.sender == administrator);
+        require(isAdministrator(msg.sender) && isUser(userAddress));
         users[userAddress].authority = true;
     }
 
+    function deleteItem(uint8 itemId) public {
+        require(isAdministrator(msg.sender) && isValidItemId(itemId));
+        items[itemId].tradeable = false;
+    }
+
     function banPublisher(address publisherAddress) public {
-        require(msg.sender == administrator);
+        require(isAdministrator(msg.sender) && isPublisher(publisherAddress));
         publishers[publisherAddress].authority = false;
     }
 
     function unbanPublisher(address publisherAddress) public {
-        require(msg.sender == administrator);
+        require(isAdministrator(msg.sender) && isPublisher(publisherAddress));
         publishers[publisherAddress].authority = true;
     }
 
-    function getTradeCount(uint itemId) public view returns (uint) {
-        require(msg.sender == items[itemId].publisherAdress);
-        return items[itemId].tradeCount;
+    function banQuery(uint8 itemId) public {
+        require(isAdministrator(msg.sender) && isValidItemId(itemId));
+        items[itemId].allowQuery = false;
     }
 
-    function getSelledCount(uint itemId) public view returns (uint) {
-        require(msg.sender == items[itemId].publisherAdress);
-        return items[itemId].selledCount;
+    // helper function for checking
+
+    function isPublisher (address targetAddress) public view returns (bool) {
+        return targetAddress != administrator && !users[targetAddress].regeisted && publishers[targetAddress].regeisted;
     }
 
-    function getReleasedCount() public view returns (uint) {
-        return publishers[msg.sender].releasedCount;
-    }
-    
-    function getReleasedItemId(uint i) public view returns (uint) {
-        return publishers[msg.sender].releasedItems[i].itemId;
+    function isAdministrator(address targetAddress) public view returns (bool) {
+        return targetAddress == administrator && !users[targetAddress].regeisted && !publishers[targetAddress].regeisted;
     }
 
-    function getTypeId(uint itemId) public view returns (uint) {
+    function isUser(address targetAddress) public view returns (bool) {
+        return targetAddress != administrator && users[targetAddress].regeisted && !publishers[targetAddress].regeisted;
+    }
+
+    function isNobody(address targetAddress) public view returns (bool) {
+       return targetAddress != administrator && !users[targetAddress].regeisted && !publishers[targetAddress].regeisted;
+    }
+
+    function isValidItemId(uint8 itemId) public view returns (bool) {
+        return itemId > 0 && itemId < globalItemId;
+    }
+
+
+    // basic get function
+
+    function getTypeId(uint8 itemId) public view returns (uint8) {
+        require(isValidItemId(itemId));
         return items[itemId].typeId;
     }
 
-    function getPrice(uint itemId) public view returns (uint) {
+    function getPrice(uint8 itemId) public view returns (uint8) {
+        require(isValidItemId(itemId));
         return items[itemId].price;
     }
 
-    function getName(uint itemId) public view returns (string memory) {
-        return items[itemId].name;
+    function getItemName(uint8 itemId) public view returns (string memory) {
+        return items[itemId].itemName;
     }
+
 
     function userType() public view returns (EntityType) {
         if (msg.sender == administrator) {

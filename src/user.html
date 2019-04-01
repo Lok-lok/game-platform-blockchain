@@ -25,7 +25,7 @@
         <table class="table">
           <thead>
           <tr>
-            <th scope="col">Item ID</th>
+            <th scope="col">Global ID</th>
             <th scope="col">Offer ID</th>
             <th scope="col">Name</th>
             <th scope="col">Price</th>
@@ -75,10 +75,8 @@
             <br>
           </div>
           <button type="submit" class="btn btn-primary">Add Money</button>
-            <br>
-            <br>
-          <p id="currentMoney"></p>
           <hr />
+          <p id="currentMoney"></p>
         </form>
 
 
@@ -106,7 +104,7 @@
 
         <form onSubmit="App.userBuy(); return false;">
           <div class="form-group">
-            Item ID:
+            Offer ID:
             <input type="number" id="publisherBuy">
             <br>
             <br>
@@ -115,6 +113,7 @@
           <hr />
 
         </form>
+        <p id="currentUserId"></p>
 
       </div>
     </div>

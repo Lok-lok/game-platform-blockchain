@@ -1,142 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
+    
     <title>Game Platform</title>
 
     <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-
-</head>
-
-<body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Game Platform</a>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="index.html">Home</a></li>
-                <li class="active"><a href="publisher.html">Publishers</a></li>
-                <li><a href="user.html">User</a></li>
-                <li><a href="register.html">Register</a></li>
-                <li><a href="admin.html">Admin</a></li>
-            </ul>
-        </div>
-    </nav>
+    
+  </head>
+  <body>
     <div class="container" style="width: 650px;">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="text-center">Publisher</h1>
-                <hr/>
-                <br/>
-                <div id="loader">
-                    <p class="text-center">Loading...</p>
-                </div>
-                <div id="content" style="display: none;">
-                    <h2>Game History</h2>
-                    <form onSubmit="App.getGameHistory()">
-                        <div class="form-group">
-                            <label for="candidatesSelect"></label>
-                            <div class="form-group">
-                                <label for="game">Unique Game Id</label>
-                                <input type="text" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">History of Game</button>
-                        <hr />
-                    </form>
+      <div class="row">
+        <div class="col-lg-12">
+          <h1 class="text-center">Publisher</h1>
+          <br>
+          <br>
+          <div id="loader">
+            <p class="text-center">Loading...</p>
+          </div>
+          <div id="content" style="display: none;">
 
-                    <h2>Item History</h2>
-                    <form onSubmit="App.getItemHistory()">
-                        <div class="form-group">
-                            <label for="candidatesSelect"></label>
-                            <div class="form-group">
-                                <label for="game">General Game Id</label>
-                                <input type="text" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
-                            </div>
-                            <div class="form-group">
-                                <label for="game">Item Id</label>
-                                <input type="text" class="form-control" id="gameId" placeholder="Enter item Id" name="gameId">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">History of Item</button>
-                        <hr />
-                    </form>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Trade Count</th>
+                  <th scope="col">Sell Count</th>
+                </tr>
+              </thead>
+              <tbody id="ReleasedItems">
+              </tbody>
+            </table>
 
-                    <h2>Delete Item</h2>
-                    <form onSubmit="App.deleteItem()">
-                        <div class="form-group">
-                            <label for="candidatesSelect"></label>
-                            <div class="form-group">
-                                <label for="game">General Game Id</label>
-                                <input type="text" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
-                            </div>
-                            <div class="form-group">
-                                <label for="game">Item Id</label>
-                                <input type="text" class="form-control" id="itemId" placeholder="Enter item Id" name="itemId">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Delete Item</button>
-                        <hr />
-                    </form>
-                    <h2>Release New Item</h2>
-                    <form onSubmit="App.publisherRelease()">
-                        <div class="form-group">
-                            <label for="candidatesSelect"></label>
-                            <div class="form-group">
-                                <label for="itemName">Item Name</label>
-                                <input type="text" class="form-control" id="itemName" placeholder="Enter item name" name="itemName">
-                            </div>
-                            <div class="form-group">
-                                <label for="itemType">Item Type</label>
-                                <input type="text" class="form-control" id="itemType" placeholder="Enter item type" name="itemType">
-                            </div>
-                            <div class="form-group">
-                                <label for="itemPrice">Item Price</label>
-                                <input type="text" class="form-control" id="itemPrice" placeholder="Enter $$$" name="itemPrice">
-                            </div>
-                            <div class="form-group">
-                                <label for="itemRepeatable">Repeatable?</label>
-                                <input type="text" class="form-control" id="itemRepeatable" placeholder="Enter Repeatable" name="itemRepeatable">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Release New Item</button>
-                        <hr />
-                    </form>
+            <hr/>
+            <form onSubmit="App.publisherRelease(); return false;">
+              <div class="form-group">
+                Name:
+                <input type="text" id="itemName" >
+                <br>
+                <br>
+                Price: 
+                <input type="number" id="itemPrice">
+                <br>
+                <br>
+                Limited?: 
+                <select class="form-control" id="itemRepeatable">
+                  <option value= 1> True </option>
+                  <option value= 0> False </option>
+                </select>
+                <br>
+                Type:
+                <select class="form-control" id="itemType">
+                  <option value= 0> Game </option>
+                  <option value= 1> Skin </option>
+                  <option value= 2> Coins </option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Release !!!</button>
+              <hr />
+            </form>
 
-                    <h2>Average Sell Price of Item</h2>
-                    <form onSubmit="App.avgSellPrice()">
-                        <div class="form-group">
-                            <label for="candidatesSelect"></label>
-                            <div class="form-group">
-                                <label for="game">General Game Id</label>
-                                <input type="game" class="form-control" id="gameId" placeholder="Enter game Id" name="gameId">
-                            </div>
-                            <div class="form-group">
-                                <label for="game">Item Id</label>
-                                <input type="item" class="form-control" id="itemId" placeholder="Enter item Id" name="itemId">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Average Sell Price</button>
-                        <hr />
-                    </form>
-                </div>
-            </div>
+            <form onSubmit="App.publisherQuery(); return false;">
+              <div class="form-group">
+                 Which one:
+                <input type="number" id="queryItem" >
+              </div>
+              <button type="submit" class="btn btn-primary">Query !!!</button>
+              <hr />
+            </form>
+
+          </div>
         </div>
+      </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
     <script src="publisher.js"></script>
-</body>
-
+  </body>
 </html>

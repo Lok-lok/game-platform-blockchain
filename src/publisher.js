@@ -1,6 +1,14 @@
+ID2TypeName = {
+    0 : "GAME",
+    1 : "SKIN",
+    2 : "CG"
+  },
+
+
 App = {
   loading: false,
   contracts: {},
+  itemToShowTradeCount: 0,
 
   load: async () => {
     await App.loadWeb3()
@@ -59,130 +67,55 @@ App = {
   render: async () => {
     App.loader = $("#loader");
     App.content = $("#content");
-    
     App.setLoading(true)
-    
-    // Render Account
-    $('#accountAddress').html(App.account)
 
-    await App.renderVoteResult()
-    await App.renderVote()
-    await App.renderOpen()
-    await App.renderHistory()
-    
+    $('#accountAddress').html(App.account)
+    await App.renderItems()
+
     App.setLoading(false)
   },
 
-  renderVoteResult: async () => {
-    const proposalCount = await App.voting.proposalCount()
-    const winner = await App.voting.getWin()
-    for (var i = 0; i < proposalCount; i++) {
-      const proposal = await App.voting.proposals(i)
-      $("#candidatesResults").append("<tr><th>" + i + "</th><td>" + proposal + "</td></tr>")
-    }
-    
-    if (winner.length != proposalCount) {
-      string = "Winner(s):"
-      for (var i = 0; i < winner.length; i++)
-        string += " " + winner[i].c[0]
-      $('#winner').html(string)
-    } else {
-      $('#winner').html("No winner determined previously")
+  renderItems: async () => {
+
+    const releasedCount = (await App.Platform.getReleasedCount()).toNumber();
+    for (var i = 0; i < releasedCount; i++) {
+      var itemId = (await App.Platform.getReleasedItemId(i)).toNumber();
+      var itemType =  (await App.Platform.getTypeId(itemId)).toNumber();
+      var itemPrice = (await App.Platform.getPrice(itemId)).toNumber();
+      var itemName = await App.Platform.getItemName(itemId);
+
+      var allowQuery = await App.Platform.getAllowQuery(itemId);
+
+      var tradeCountStr = allowQuery ? (await App.Platform.getTradeCount(itemId)).toString() : "";
+      var sellCountStr = allowQuery ? (await App.Platform.getSellCount(itemId)).toString() : "";
+
+      $("#ReleasedItems").append("<tr><th>" + itemId + "</th><td>" + itemName + "</td><td>" + ID2TypeName[itemType] + "</td><td>"
+                                + (itemPrice + " $") + "</th><td>"+ tradeCountStr + "</th><td>" + sellCountStr + "</td><tr>" );
+
     }
   },
   
-  renderVote: async () => {
-    const openToVote = await App.voting.openToVote()
-    const proposalCount = await App.voting.proposalCount()
-    const vote_ret = await App.voting.getVote()
-    const vote = vote_ret.c[0]
-    const normal = vote_ret.s == 1
-    
-    const voter_div = $('#voter')
-    const vote_div = $('#vote')
-    const unvote_div = $('#unvote')
-    
-    if (openToVote) {
-      if (vote >= proposalCount) {
-        for (var i = 0; i < proposalCount; i++) {
-          $('#candidatesSelect').append("<option value='" + i + "' >" + i + "</ option>")
-        }
-        vote_div.show()
-        unvote_div.hide()
-      } else {
-        const status = $('#normal_ban')
-        $('#voteFor').html("Voted for: " + vote)
-        if (normal) {
-          status.html("Status: Normal")
-        } else {
-          status.html("Status: Banned")
-        }
-        vote_div.hide()
-        unvote_div.show()
-      }
-    } else {
-      voter_div.hide()
-    }
+  publisherRelease: async () => {
+
+    var itemId = (await App.Platform.globalItemId()).toNumber();
+    var itemName = $('#itemName').val();
+    var itemType = $('#itemType').val();
+    var itemPrice = parseInt($('#itemPrice').val());
+    var repeatable = $('#itemRepeatable').val();
+
+    await App.Platform.releaseItem(itemType, itemId, itemPrice, !!repeatable, itemName);
+    window.location.reload()
+
   },
 
-  renderOpen: async () => {
-    const openToVote = await App.voting.openToVote()
-    
-    const startVoting_div = $('#startVoting')
-    const endVoting_div = $('#endVoting')
-    const chairperson_div = $('#chairperson')
-    const status = $('#status')
-    if (openToVote) {
-      status.html("OPEN")
-    } else {
-      status.html("CLOSED")
-    }
-    App.voting.chairperson().then(function(chairperson) {
-      if (App.account == chairperson) {
-        if (openToVote) {
-          startVoting_div.hide()
-          endVoting_div.show()
-        } else {
-          startVoting_div.show()
-          endVoting_div.hide()
-        }
-        chairperson_div.show()
-      } else {
-        chairperson_div.hide()
-      }
-    })
+  publisherQuery: async () => {
+    var itemId = parseInt($('#queryItem').val());
+    await App.Platform.allowQuery(itemId);
+    window.location.reload()
   },
   
-  renderHistory: async () => {
-    let logVote = App.voting.LogVote({}, {fromBlock: 0, toBlock: 'latest'})
-    logVote.get((error, logs) => {
-      // we have the logs, now print them
-      logs.forEach(log => {
-        let vote = log.args["vote"].s == 1
-        string = "<tr><th>" + log.args["vote"].c[0] + "</th><td>"
-        if (vote) {
-          string += "Vote"
-        } else {
-          string += "Unvote"
-        }
-        string += "</td><td>" + log.args["voter"] + "</td><td>" +  log.args["timestamp"].c[0] + "</td></tr>"
-        $("#history").append(string)
-      })
-    })
-  },
-
-
-  publiserRegeister: async () => {
-  },
-
-  publiserRelease: async () => {
-  },
-
-  publiserQueryTradeCount: async () => {
-  },
-  
-  publiserQueryselledCount: async () => {
-  },
+  // publisherQueryselledCount: async () => {
+  // },
 
   
   setLoading: async (boolean) => {

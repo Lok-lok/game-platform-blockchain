@@ -113,13 +113,13 @@ contract PlatformContract {
     // function for user
 
     function addMoney (uint8 count) public {
-        require(isUser(msg.sender));
+        //require(isUser(msg.sender));
         users[msg.sender].money += count;
     }
 
     function buyItem(uint8 itemId) public {
 
-        require(isUser(msg.sender) && isValidItemId(itemId));
+        //require(isUser(msg.sender) && isValidItemId(itemId));
 
         User storage user = users[msg.sender];
         Item storage item = items[itemId];
@@ -133,7 +133,7 @@ contract PlatformContract {
     }
     
     function makeOffer(uint8 itemId, uint8 tradePrice) public {
-        require(isUser(msg.sender) && isValidItemId(itemId));
+        //require(isUser(msg.sender) && isValidItemId(itemId));
         User storage seller = users[msg.sender];
         Item storage item = items[itemId];
         
@@ -154,17 +154,18 @@ contract PlatformContract {
     }
 
     function recallOffer(uint8 offerId) public {
-        require(isUser(msg.sender));
+        //require(isUser(msg.sender));
         require(offerId > 0 && offers[offerId].sellerAdress == msg.sender && offers[offerId].active);
         users[msg.sender].items[offers[offerId].itemId]++;
         offers[offerId].active = false;
+        users[msg.sender].money += offers[offerId].price;
     }
 
 
     function tradeItem(uint8 offerId) public {
 
         address sellerAdress = offers[offerId].sellerAdress;
-        require(isUser(msg.sender) && isUser(sellerAdress));
+        //require(isUser(msg.sender) && isUser(sellerAdress));
 
         User storage buyer = users[msg.sender];
         User storage seller = users[sellerAdress];
@@ -173,9 +174,9 @@ contract PlatformContract {
         uint8 tradePrice = offers[offerId].price;
 
         require(isValidItemId(itemId) && item.tradeable && offers[offerId].active
-                && buyer.money >= item.price && buyer.authority 
+                && buyer.money >= tradePrice && buyer.authority 
                 && (item.repeatable == true || buyer.items[itemId] == 0)
-                && seller.items[itemId] != 0 && seller.authority);
+                && seller.authority);
 
         // mapping generates default value
         buyer.items[itemId]++;
@@ -190,17 +191,39 @@ contract PlatformContract {
         item.tradeCount++;
         offers[offerId].active = false;
     }
-    
-    function getUserList() public view returns (address[] memory) {
-        require(msg.sender == administrator);
-        return userList;
-    }
-    
-    function getPublisherList() public view returns (address[] memory) {
-        require(msg.sender == administrator);
-        return publisherList;
+
+    function getUserItem(uint8 itemId) public view returns (uint8) {
+        //require(isUser(msg.sender) && isValidItemId(itemId));
+        return users[msg.sender].items[itemId];
     }
 
+    function getMoney() public view returns (uint8) {
+        //require(isUser(msg.sender) && isValidItemId(itemId));
+        return users[msg.sender].money;
+    }
+
+    function getOfferActivity(uint8 offerId) public view returns (bool) {
+        //require(isUser(msg.sender) && isValidItemId(itemId));
+        return offers[offerId].active;
+    }
+
+    function getOfferItemId(uint8 offerId) public view returns (uint8) {
+        //require(isUser(msg.sender) && isValidItemId(itemId));
+        return offers[offerId].itemId;
+    }
+
+    function getOfferPrice(uint8 offerId) public view returns (uint8) {
+        //require(isUser(msg.sender) && isValidItemId(itemId));
+        return offers[offerId].price;
+    }
+
+    function getSellerAdress(uint8 offerId) public view returns (address) {
+        //require(isUser(msg.sender) && isValidItemId(itemId));
+        return offers[offerId].sellerAdress;
+    }
+
+
+    
     // function for publisher
     function releaseItem(uint8 typeId, uint8 itemId, uint8 price, bool repeatable, string memory itemName) public {
         //require(isPublisher(msg.sender));
@@ -317,6 +340,16 @@ contract PlatformContract {
 
     function getItemName(uint8 itemId) public view returns (string memory) {
         return items[itemId].itemName;
+    }
+
+    function getUserList() public view returns (address[] memory) {
+        require(msg.sender == administrator);
+        return userList;
+    }
+    
+    function getPublisherList() public view returns (address[] memory) {
+        require(msg.sender == administrator);
+        return publisherList;
     }
 
 

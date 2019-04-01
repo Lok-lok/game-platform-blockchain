@@ -102,10 +102,10 @@ App = {
         var itemId = (await App.Platform.getOfferItemId(i)).toNumber();
         var itemType = (await App.Platform.getTypeId(itemId)).toNumber();
         var itemPrice = (await App.Platform.getOfferPrice(i)).toNumber();
-        var itemName = await App.Platform.getOfferName(i);
-        var itemSeller = (await App.Platform.getOfferSellerId(i));
+        var itemName = await App.Platform.getItemName(itemId);
+        var itemSeller = (await App.Platform.getSellerAdress(i)).toString();
 
-        $("#ReleasedItems").append("<tr><th>" + itemId + "</th><td>" + i + "</td><td>" + itemName + "</td><td>" + ("$" + itemPrice) + "</td><td>" + ID2TypeName[itemType] + "</td><td>"
+        $("#ReleasedItems").append("<tr><th>" + itemId + "</th><td>" + i + "</td><td>" + itemName + "</td><td>" + (itemPrice + "$" ) + "</td><td>" + ID2TypeName[itemType] + "</td><td>"
 
             + itemSeller + "</td><tr>");
       }

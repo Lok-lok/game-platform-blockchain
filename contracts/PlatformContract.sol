@@ -158,7 +158,6 @@ contract PlatformContract {
         require(offerId > 0 && offers[offerId].sellerAdress == msg.sender && offers[offerId].active);
         users[msg.sender].items[offers[offerId].itemId]++;
         offers[offerId].active = false;
-        users[msg.sender].money += offers[offerId].price;
     }
 
 

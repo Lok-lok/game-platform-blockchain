@@ -39,64 +39,55 @@
                 <div id="loader">
                     <p class="text-center">Loading...</p>
                 </div>
-                <div id="content">
-
-                    <div id="voter">
-                        <div id="vote">
-                            <h2>Ban User</h2>
-                            <form onSubmit="App.banUser()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">User Id</label>
-                                        <input type="text" class="form-control" id="userId" placeholder="Enter user Id" name="userId">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Ban User</button>
-                                <hr />
-                            </form>
-                            <h2>Ban Publisher</h2>
-                            <form onSubmit="App.banPublisher()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">Publisher Id</label>
-                                        <input type="text" class="form-control" id="publisherId" placeholder="Enter publisher Id" name="userId">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Ban Publisher</button>
-                                <hr />
-                            </form>
-                            <h2>Unban User</h2>
-                            <form onSubmit="App.unbanUser()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">User Id</label>
-                                        <input type="text" class="form-control" id="UserId" placeholder="Enter User Id" name="userId">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Unban User</button>
-                                <hr />
-                            </form>
-                            <h2>Unban Publisher</h2>
-                            <form onSubmit="App.unbanPublisher()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">Publisher Id</label>
-                                        <input type="text" class="form-control" id="publisherId" placeholder="Enter publisher Id" name="userId">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Unban Publisher</button>
-                                <hr />
-                            </form>
-                        </div>
-
-                    </div>
-
-                    <tbody id="history">
-                    </tbody>
+                <div id="content" style="display: none;">
+                  <h2>Ban User</h2>
+                  <form onSubmit="App.banUser()">
+                      <div class="form-group">
+                          <label for="candidatesSelect"></label>
+                          <div class="form-group">
+                              <label for="game">User Id</label>
+                              <input type="text" class="form-control" id="userId" placeholder="Enter user Id" name="userId">
+                          </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Ban User</button>
+                      <hr />
+                  </form>
+                  <h2>Ban Publisher</h2>
+                  <form onSubmit="App.banPublisher()">
+                      <div class="form-group">
+                          <label for="candidatesSelect"></label>
+                          <div class="form-group">
+                              <label for="game">Publisher Id</label>
+                              <input type="text" class="form-control" id="publisherId" placeholder="Enter publisher Id" name="userId">
+                          </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Ban Publisher</button>
+                      <hr />
+                  </form>
+                  <h2>Unban User</h2>
+                  <form onSubmit="App.unbanUser()">
+                      <div class="form-group">
+                          <label for="candidatesSelect"></label>
+                          <div class="form-group">
+                              <label for="game">User Id</label>
+                              <input type="text" class="form-control" id="UserId" placeholder="Enter User Id" name="userId">
+                          </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Unban User</button>
+                      <hr />
+                  </form>
+                  <h2>Unban Publisher</h2>
+                  <form onSubmit="App.unbanPublisher()">
+                      <div class="form-group">
+                          <label for="candidatesSelect"></label>
+                          <div class="form-group">
+                              <label for="game">Publisher Id</label>
+                              <input type="text" class="form-control" id="publisherId" placeholder="Enter publisher Id" name="userId">
+                          </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Unban Publisher</button>
+                      <hr />
+                  </form>
 
                 </div>
             </div>

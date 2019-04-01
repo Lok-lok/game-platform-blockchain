@@ -1,104 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Game Platform</title>
+  <title>Game Platform</title>
 
-    <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
-
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Game Platform</a>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="publisher.html">Publishers</a></li>
-                <li class="active"><a href="user.html">User</a></li>
-                <li><a href="register.html">Register</a></li>
-                <li><a href="admin.html">Admin</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="container" style="width: 650px;">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="text-center">User</h1>
-                <hr/>
-                <br/>
-                <div id="loader">
-                    <p class="text-center">Loading...</p>
-                </div>
-                <div id="content" style="display: none;">
+<div class="container" style="width: 650px;">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="text-center">User</h1>
+      <br>
+      <br>
+      <div id="loader">
+        <p class="text-center">Loading...</p>
+      </div>
+      <div id="content" style="display: none;">
 
-                    <div id="voter">
-                        <div id="vote">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Global ID</th>
+            <th scope="col">Offer ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Type</th>
+            <th scope="col">Seller</th>
 
-                            <h2>Make Item Offer</h2>
-                            <form onSubmit="App.userPostOffer()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">Item Id</label>
-                                        <input type="text" class="form-control" id="itemId" placeholder="Enter item Id" name="itemId">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="game">Price</label>
-                                        <input type="text" class="form-control" id="price" placeholder="Enter $$$" name="price">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Make Item Offer</button>
-                                <hr />
-                            </form>
-                            <h2>Cancel Item Offer</h2>
-                            <form onSubmit="App.userCancelOffer()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">Offer Id</label>
-                                        <input type="text" class="form-control" id="offerId" placeholder="Enter offer Id" name="gameId">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Cancel Item Offer</button>
-                                <hr />
-                            </form>
-                            <h2>Accept Item Offer</h2>
-                            <form onSubmit="App.userTrade()">
-                                <div class="form-group">
-                                    <label for="candidatesSelect"></label>
-                                    <div class="form-group">
-                                        <label for="game">Offer Id</label>
-                                        <input type="text" class="form-control" id="offerId" placeholder="Enter offer Id" name="gameId">
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Accept Item Offer</button>
-                                <hr />
-                            </form>
-                        </div>
+          </tr>
+          </thead>
+          <tbody id="ReleasedItems">
+          </tbody>
+        </table>
 
-                    </div>
+        <table class="table">
+          <thead>
+          <h3>Owned Items</h3>
+          <tr>
+            <th scope="col">Global ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Amount</th>
+
+          </tr>
+          </thead>
+          <tbody id="OwnedItems">
+          </tbody>
+        </table>
+
+        <form onSubmit="App.userPostOffer(); return false;">
+          <div class="form-group">
+            Item Id:
+            <input type="text" id="itemId" >
+            <br>
+            <br>
+            Price:
+            <input type="number" id="itemPrice">
+            <br>
+            <br>
+          </div>
+          <button type="submit" class="btn btn-primary">Offer!!!</button>
+          <hr />
+        </form>
+        <form onSubmit="App.userAddMoney(); return false;">
+          <div class="form-group">
+            Money:
+            <input type="number" id="money">
+            <br>
+            <br>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Money</button>
+          <hr />
+          <p id="currentMoney"></p>
+        </form>
 
 
-                </div>
-            </div>
-        </div>
+        <form onSubmit="App.userRecallOffer(); return false;">
+          <div class="form-group">
+            Offer ID:
+            <input type="number" id="offerIdRecall">
+            <br>
+            <br>
+          </div>
+          <button type="submit" class="btn btn-primary">Recall Offer</button>
+          <hr />
+        </form>
+
+        <form onSubmit="App.userTrade(); return false;">
+          <div class="form-group">
+            Offer ID:
+            <input type="number" id="offerIdTrade">
+            <br>
+            <br>
+          </div>
+          <button type="submit" class="btn btn-primary">Accept Trade From User</button>
+          <hr />
+        </form>
+
+        <form onSubmit="App.userBuy(); return false;">
+          <div class="form-group">
+            Offer ID:
+            <input type="number" id="publisherBuy">
+            <br>
+            <br>
+          </div>
+          <button type="submit" class="btn btn-primary">Buy From Publisher</button>
+          <hr />
+          <p id="tradeHistory">hi</p>
+        </form>
+
+      </div>
     </div>
+  </div>
+</div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
-    <script src="user.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
+<script src="user.js"></script>
 </body>
-
 </html>

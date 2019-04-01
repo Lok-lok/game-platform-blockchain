@@ -182,7 +182,6 @@ contract PlatformContract {
         buyer.items[itemId]++;
         buyer.money -= tradePrice;
 
-        seller.items[itemId]--;
         seller.money += tradePrice;
         if (seller.items[itemId] <= 0) {
             delete seller.items[itemId];

@@ -89,7 +89,7 @@ App = {
     for (var i = 0; i < publisherList.length; i++) {
       let address = publisherList[i]
       let publisher = await App.Platform.publishers(address)
-      let releasedCount = publisher[2].c[0]
+      let releasedCount = publisher[3].c[0]
       let authority = publisher[0]
       string = "<tr><th>" + address + "</th>"
       string += "<td>" + releasedCount + "</td>"
@@ -99,20 +99,24 @@ App = {
   },
   
   
-  banUser: async (string) => {
-    App.Platform.banUser(string)
+  banUser: async () => {
+    var string = $('#banUserId').val();
+    await App.Platform.banUser(string)
   },
 
-  unbanUser: async (string) => {
-    App.Platform.unbanUser(string)
+  unbanUser: async () => {
+    var string = $('#unbanUserId').val();
+    await App.Platform.unbanUser(string)
   },
 
-  banPublisher: async (string) => {
-    App.Platform.banPublisher(string)
+  banPublisher: async () => {
+    var string = $('#banPublisherId').val();
+    await App.Platform.banPublisher(string)
   },
 
   unbanPublisher: async (string) => {
-    App.Platform.unbanPublisher(string)
+    var string = $('#unbanPublisherId').val();
+    await App.Platform.unbanPublisher(string)
   },
 
   

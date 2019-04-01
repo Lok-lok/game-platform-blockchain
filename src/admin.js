@@ -100,23 +100,31 @@ App = {
   
   
   banUser: async () => {
+    App.setLoading(true)
     var string = $('#banUserId').val();
     await App.Platform.banUser(string)
+    window.location.reload()
   },
 
   unbanUser: async () => {
+    App.setLoading(true)
     var string = $('#unbanUserId').val();
     await App.Platform.unbanUser(string)
+    window.location.reload()
   },
 
   banPublisher: async () => {
+    App.setLoading(true)
     var string = $('#banPublisherId').val();
     await App.Platform.banPublisher(string)
+    window.location.reload()
   },
 
   unbanPublisher: async (string) => {
+    App.setLoading(true)
     var string = $('#unbanPublisherId').val();
     await App.Platform.unbanPublisher(string)
+    window.location.reload()
   },
 
   

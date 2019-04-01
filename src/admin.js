@@ -64,8 +64,38 @@ App = {
     
     // Render Account
     $('#accountAddress').html(App.account)
+    App.renderUserList()
+    App.renderPublisherList()
     
     App.setLoading(false)
+  },
+  
+  renderUserList: async () => {
+    let userList = await App.Platform.getUserList()
+    for (var i = 0; i < userList.length; i++) {
+      let address = userList[i]
+      let user = await App.Platform.users(address)
+      let money = user[0].c[0]
+      let authority = user[1]
+      string = "<tr><th>" + address + "</th>"
+      string += "<td>" + money + "</td>"
+      string += "<td>" + authority + "</td></tr>"
+      $("#user-list").append(string)
+    }
+  },
+  
+  renderPublisherList: async () => {
+    let publisherList = await App.Platform.getPublisherList()
+    for (var i = 0; i < publisherList.length; i++) {
+      let address = publisherList[i]
+      let publisher = await App.Platform.publishers(address)
+      let releasedCount = publisher[2].c[0]
+      let authority = publisher[0]
+      string = "<tr><th>" + address + "</th>"
+      string += "<td>" + releasedCount + "</td>"
+      string += "<td>" + authority + "</td></tr>"
+      $("#publisher-list").append(string)
+    }
   },
   
   

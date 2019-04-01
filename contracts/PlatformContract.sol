@@ -66,11 +66,14 @@ contract PlatformContract {
     }
 
     address public administrator;
-    mapping(address => User) public users; 
+    mapping(address => User) public users;
     mapping(address => Publisher) public publishers;
     Item[] public items; 
     mapping(uint => Offer) public offers;
     uint globalOfferId; // start from 1/ 0 means null
+    
+    address[] private userList;
+    address[] private publisherList;
 
     constructor() public {
         administrator = msg.sender;
@@ -85,6 +88,7 @@ contract PlatformContract {
         p.regeisted = true;
 
         publishers[msg.sender] = p;
+        publisherList.push(msg.sender);
     }
 
     function releaseItem(uint gameId, uint itemId, uint price, bool repeatable) public {
@@ -113,6 +117,7 @@ contract PlatformContract {
         u.authority = true;
 
         users[msg.sender] = u;
+        userList.push(msg.sender);
     }
 
     function addMoney (uint8 count) public {
@@ -185,6 +190,16 @@ contract PlatformContract {
 
         item.tradeCount++;
         offers[offerId].active = false;
+    }
+    
+    function getUserList() public view returns (address[] memory) {
+        require(msg.sender == administrator);
+        return userList;
+    }
+    
+    function getPublisherList() public view returns (address[] memory) {
+        require(msg.sender == administrator);
+        return publisherList;
     }
 
     function banUser(address userAddress) public {

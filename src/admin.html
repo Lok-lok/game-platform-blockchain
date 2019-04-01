@@ -40,6 +40,30 @@
                     <p class="text-center">Loading...</p>
                 </div>
                 <div id="content" style="display: none;">
+                  <h2 class="text-center">User List</h2>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Address</th>
+                          <th scope="col">Money</th>
+                          <th scope="col">Authority</th>
+                        </tr>
+                      </thead>
+                      <tbody id="user-list">
+                      </tbody>
+                    </table>
+                  <h2 class="text-center">Publisher List</h2>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Address</th>
+                          <th scope="col">Released Count</th>
+                          <th scope="col">Authority</th>
+                        </tr>
+                      </thead>
+                      <tbody id="publisher-list">
+                      </tbody>
+                    </table>
                   <h2>Ban User</h2>
                   <form onSubmit="App.banUser()">
                       <div class="form-group">

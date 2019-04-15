@@ -83,8 +83,10 @@ contract PlatformContract {
 
     constructor() public {
         administrator = msg.sender;
-        globalOfferId = 1;
-        globalItemId = 1;
+        globalOfferId = 2;
+        globalItemId = 2;
+
+        Item memory newItem = Item(msg.sender, 1, 0, 0, 0, 0, false, true, "Test Item", false);
     }
 
     // regeisting function
